@@ -42,6 +42,12 @@ let rec insert_at_end l i =
   | h :: t -> h :: (insert_at_end t i)
 
 
+(* let rec find_column_break string =
+  match string with
+  "" -> ()
+  | '\t' -> print_string "OI"
+  | -> find_column_break String.sub s i (String.length s - i) *)
+
 let rec print_list = function 
 [] -> ()
 | e::l -> print_string e; print_string "QUEBRAA";  print_list l
@@ -59,6 +65,34 @@ let lines_in_file filename =
   with End_of_file ->
     close_in chan;
   List.rev !lines ;;
+
+
+
+let iterate_line_by_line lines = 
+  let lines_length = List.length lines in
+  for i = 1 to lines_length - 1 do 
+    print_string (List.nth lines i)
+  done;;
+  
+
+
+
+let columns_by_line_matrix lines = 
+  let my_matrix = Array.make_matrix 16 25 "" in   
+  let lines_length = List.length lines in
+  for i = 1 to lines_length - 1 do 
+    (* Get all lines and split as columns when element is found *)
+    let columns = String.split_on_char '\t' (List.nth lines i) in
+      let columns_length = List.length columns in
+      for j = 1 to columns_length do
+        (* Get jth column and put it on the list according to line (i) and column (j) *)
+        let column_nth = List.nth columns j in 
+        my_matrix.(i).(j) <- column_nth
+        print_string (List.nth columns j)
+      done
+  done;
+
+
 
 
 (* Get line input by the user *)
