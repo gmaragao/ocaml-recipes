@@ -2,7 +2,6 @@ open Printf
 
 let file_receitas = "receitas.csv"
 
-
 let rec append_lists lst1 lst2 = 
   match lst1 with 
   | [] -> lst2
@@ -44,7 +43,7 @@ let iterate_line_by_line lines =
     print_string (List.nth lines i)
   done;;
   
-  
+
 let create_recipe_matrix lines = 
   let lines_length = List.length lines in
   let columns_length = List.length (String.split_on_char '\t' (List.nth lines 1)) in
@@ -58,7 +57,7 @@ let create_recipe_matrix lines =
         recipes_ingredients_matrix.(i).(j) <- column_nth
       done
   done;
-  recipes_ingredients_matrix;;
+  recipes_ingredients_matrix
 
 
 
@@ -68,3 +67,15 @@ let requested_line lines =
   let line_from_user = read_int() in List.nth lines line_from_user;;
 
 
+
+(* While user input is not 0 keep asking for text *)
+let () = 
+  let lines_read = lines_in_file file_receitas in
+  let matrix_of_ingredients = create_recipe_matrix lines_read in 
+  let rec read_input input  =
+    match input with
+    -1 ->  ();
+    | _ -> 
+      print_endline "Diz ai receita que tu quer po. Se quiser parar manda um -1 pra nois"; let input_by_user = read_int() in
+      print_endline (List.nth lines_read input_by_user); 
+      read_input input_by_user in read_input 9;
