@@ -1,30 +1,7 @@
 open Printf
 
 let file_receitas = "receitas.csv"
-let message = "Hello!"
 
-(* let rec print_list = function 
-[] -> ()
-| e::l -> print_int e ; print_string " " ; print_list l
-
-(* let concat_strings (a b) = a ^ b  *)
-
-e
-let read_lines file_name : string list =
-  let ic = open_in file_name in
-  let try_read () =
-    try Some (input_line ic) with End_of_file -> None in
-  let rec loop acc = match try_read () with
-    | Some s -> loop (s :: acc)
-    | None -> close_in ic; List.rev acc in
-  loop []
-
-
-
-let () = 
-  let result = read_lines file_receitas in
-  print_endline line;       (* write the result to stdout *)
-        flush stdout *)
 
 let rec append_lists lst1 lst2 = 
   match lst1 with 
@@ -41,12 +18,6 @@ let rec insert_at_end l i =
     [] -> [i]
   | h :: t -> h :: (insert_at_end t i)
 
-
-(* let rec find_column_break string =
-  match string with
-  "" -> ()
-  | '\t' -> print_string "OI"
-  | -> find_column_break String.sub s i (String.length s - i) *)
 
 let rec print_list = function 
 [] -> ()
@@ -67,16 +38,13 @@ let lines_in_file filename =
   List.rev !lines ;;
 
 
-
 let iterate_line_by_line lines = 
   let lines_length = List.length lines in
   for i = 1 to lines_length - 1 do 
     print_string (List.nth lines i)
   done;;
   
-
-
-
+  
 let create_recipe_matrix lines = 
   let lines_length = List.length lines in
   let columns_length = List.length (String.split_on_char '\t' (List.nth lines 1)) in
