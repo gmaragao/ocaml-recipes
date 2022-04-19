@@ -20,7 +20,7 @@ let rec insert_at_end l i =
 
 let rec print_list = function 
 [] -> ()
-| e::l -> print_string e; print_string "QUEBRAA";  print_list l
+| e::l -> print_endline e; print_list l;
 
 
 
@@ -60,12 +60,13 @@ let create_recipe_matrix lines =
   recipes_ingredients_matrix
 
 
-
-(* Get line input by the user *)
-(* Receives an array of lines and return the requested_line *)
-let requested_line lines = 
-  let line_from_user = read_int() in List.nth lines line_from_user;;
-
+let print_ingredients_for_recipe recipe_number ingredients_matrix =
+  print_endline "Ingredientes: ";
+  for i = 3 to 24 do
+    print_string ingredients_matrix.(recipe_number).(i); print_string " ";
+  done;
+  
+  
 
 
 (* While user input is not 0 keep asking for text *)
@@ -77,5 +78,5 @@ let () =
     -1 ->  ();
     | _ -> 
       print_endline "Diz ai receita que tu quer po. Se quiser parar manda um -1 pra nois"; let input_by_user = read_int() in
-      print_endline (List.nth lines_read input_by_user); 
+      print_ingredients_for_recipe input_by_user matrix_of_ingredients;
       read_input input_by_user in read_input 9;
