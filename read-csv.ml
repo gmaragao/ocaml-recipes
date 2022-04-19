@@ -77,21 +77,20 @@ let iterate_line_by_line lines =
 
 
 
-let columns_by_line_matrix lines = 
-  let my_matrix = Array.make_matrix 16 25 "" in   
+let create_recipe_matrix lines = 
   let lines_length = List.length lines in
-  for i = 1 to lines_length - 1 do 
-    (* Get all lines and split as columns when element is found *)
+  let columns_length = List.length (String.split_on_char '\t' (List.nth lines 1)) in
+  let recipes_ingredients_matrix = Array.make_matrix lines_length columns_length "" in   
+  for i = 0 to lines_length - 1 do 
     let columns = String.split_on_char '\t' (List.nth lines i) in
-      let columns_length = List.length columns in
-      for j = 1 to columns_length do
+    (* Get all lines and split as columns when element is found *)
+      for j = 0 to columns_length - 1 do
         (* Get jth column and put it on the list according to line (i) and column (j) *)
         let column_nth = List.nth columns j in 
-        my_matrix.(i).(j) <- column_nth
-        print_string (List.nth columns j)
+        recipes_ingredients_matrix.(i).(j) <- column_nth
       done
   done;
-
+  recipes_ingredients_matrix;;
 
 
 
