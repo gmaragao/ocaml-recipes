@@ -34,14 +34,14 @@ let lines_in_file filename =
     done; !lines
   with End_of_file ->
     close_in chan;
-  List.rev !lines ;;
+  List.rev !lines;
 
 
 let iterate_line_by_line lines = 
   let lines_length = List.length lines in
   for i = 1 to lines_length - 1 do 
     print_string (List.nth lines i)
-  done;;
+  done;
   
 
 let create_recipe_matrix lines = 
@@ -57,7 +57,7 @@ let create_recipe_matrix lines =
         recipes_matrix.(i).(j) <- column_nth
       done
   done;
-  recipes_matrix
+  recipes_matrix;
 
 
 let print_ingredients_for_recipe recipe_number recipes_matrix =
@@ -72,7 +72,7 @@ let print_recipe_title recipe_number recipes_matrix =
   print_string ("Nome: " ^ recipes_matrix.(recipe_number).(1));
 
 let print_recipe_preparation recipe_number recipes_matrix = 
-  print_endline "Preparo: "
+  print_endline "Preparo: ";
   print_string recipes_matrix.(recipe_number).(1);
 
 let rec print_all_recipes_titles recipes_matrix line_number = 
@@ -86,14 +86,36 @@ let rec print_all_recipes_titles recipes_matrix line_number =
 let rec print_n_recipes_details recipe_number recipes_matrix remaining_recipes =
   match remaining_recipes with
   0 -> ()
-  | -> 
+  | _ -> 
     print_endline "Escolha 3 receitas das citadas."; let input_by_user = read_int() in
     print_ingredients_for_recipe input_by_user matrix_of_ingredients;
     read_input input_by_user in read_input 9;
 
     
+let find_equal_ingredients recipes_matrix recipe_number1 recipe_number2 = 
+  let rec get_ingredient j =
+    (match j with
+    |  _ when j >= Array.length recipes_matrix.(recipe_number1) - 1 -> ()
+    |  _ ->
+      let ingredient_name = recipes_matrix.(recipe_number1).(j) in
+      let rec get_other_ingredient k =
+        (match k with
+        | _ when k >= Array.length recipes_matrix.(recipe_number2) -> ()
+        | _ when recipes_matrix.(recipe_number2).(k) = "" -> get_other_ingredient (k+2)
+        | _ ->
+          let other_ingredient = recipes_matrix.(recipe_number2).(k) in
+          if ingredient_name = other_ingredient then 
+            (
+              print_endline (ingredient_name ^ " " ^ other_ingredient); 
+              print_endline (recipes_matrix.(recipe_number2).(j+1) ^ " " ^ recipes_matrix.(recipe_number2).(k+1));
+              let quantity_number = String.split_on_char ' ' recipes_matrix.(recipe_number2).(k+1) in print_endline (List.nth quantity_number 0);
+            );
+          get_other_ingredient (k+2))
+      in get_other_ingredient 3; get_ingredient (j+2)) 
+      in get_ingredient 3; 
+        (* )  *)
 
-
+          (* print_string recipes_matrix.(recipe_number).(5);
 (* While user input is not 0 keep asking for text *)
 (* let () = 
   let lines_read = lines_in_file file_receitas in
@@ -111,4 +133,4 @@ let rec print_n_recipes_details recipe_number recipes_matrix remaining_recipes =
 let () = 
   let lines_read = lines_in_file file_receitas in
   let matrix_of_ingredients = create_recipe_matrix lines_read in 
-  print_all_recipes_titles matrix_of_ingredients 1
+  print_all_recipes_titles matrix_of_ingredients 1;
