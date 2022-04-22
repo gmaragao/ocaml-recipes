@@ -12,15 +12,15 @@ let concat_texts txt1 txt2 =
   txt1 ^ txt2;;
 
 
-let rec insert_at_end l i =
+let rec insert_at_end l f =
   match l with
-    [] -> [i]
-  | h :: t -> h :: (insert_at_end t i)
+    [] -> [f]
+  | h :: t -> h :: (insert_at_end t f)
 
 
 let rec print_list = function 
 [] -> ()
-| e::l -> print_endline e; print_list l;
+| e::l -> print_float e; print_list l;
 
 
 
@@ -93,6 +93,8 @@ let rec print_n_recipes_details recipe_number recipes_matrix remaining_recipes =
 
     
 let find_equal_ingredients recipes_matrix recipe_number1 recipe_number2 = 
+  let equal_ingredients_quantity = ref [] in 
+  let equal_ingredients_name = ref [] in 
   let rec get_ingredient j =
     (match j with
     |  _ when j >= Array.length recipes_matrix.(recipe_number1) - 1 -> ()
@@ -108,14 +110,35 @@ let find_equal_ingredients recipes_matrix recipe_number1 recipe_number2 =
             (
               print_endline (ingredient_name ^ " " ^ other_ingredient); 
               print_endline (recipes_matrix.(recipe_number2).(j+1) ^ " " ^ recipes_matrix.(recipe_number2).(k+1));
-              let quantity_number = String.split_on_char ' ' recipes_matrix.(recipe_number2).(k+1) in print_endline (List.nth quantity_number 0);
+              equal_ingredients_name := ingredient_name :: !equal_ingredients_name;
+              let quantity_number_string_list_1 = String.split_on_char ' ' recipes_matrix.(recipe_number1).(j+1) in 
+              let quantity_number_string_list_2 = String.split_on_char ' ' recipes_matrix.(recipe_number2).(k+1) in 
+                let quantity_number_string_1 = (List.nth quantity_number_string_list_1 0) in
+                let quantity_number_string_2 = (List.nth quantity_number_string_list_2 0) in
+                 let quantity_number_float_1 = float_of_string quantity_number_string_1 in 
+                  print_float quantity_number_float_1;
+                let quantity_number_float_2 = float_of_string quantity_number_string_2 in 
+                  (* print_endline "AFF"; *)
+                  (* insert_at_end equal_ingredients_list quantity_number_float_2; *)
+                  print_float quantity_number_float_2;
+                  let tuple = (quantity_number_float_1, quantity_number_float_2) in 
+                  equal_ingredients_quantity := tuple :: !equal_ingredients_quantity;
+                  (* equal_ingredients_list := quantity_number_float_2 :: !equal_ingredients_list; *)
+                  (* equal_ingredients_list := my_list; *)
+                  print_endline "LIST NOW";
             );
           get_other_ingredient (k+2))
       in get_other_ingredient 3; get_ingredient (j+2)) 
       in get_ingredient 3; 
+      let ingredients_tuple = (List.rev !equal_ingredients_name, List.rev !equal_ingredients_quantity) in
+      (* Returns *) 
+      ingredients_tuple;
         (* )  *)
 
-          (* print_string recipes_matrix.(recipe_number).(5);
+
+
+
+(* print_string recipes_matrix.(recipe_number).(5);
 (* While user input is not 0 keep asking for text *)
 (* let () = 
   let lines_read = lines_in_file file_receitas in
