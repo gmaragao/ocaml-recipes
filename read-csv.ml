@@ -96,14 +96,14 @@ let rec print_n_recipes_details recipe_number recipes_matrix remaining_recipes =
     read_input input_by_user in read_input 9;
 
 
-type ingredients = {
-  name: int;
-  total: int;
-  unit: int;
+type ingredient_detail = {
+  name: string;
+  total: float;
+  unit: string;
 }
 
 
-let find_equal_ingredients recipes_matrix recipe_number1 recipe_number2 = 
+(* let find_equal_ingredients recipes_matrix recipe_number1 recipe_number2 = 
   let equal_ingredients_quantity = ref [] in 
   let equal_ingredients_name = ref [] in 
   let equal_ingredients_unit = ref [] in
@@ -149,15 +149,74 @@ let find_equal_ingredients recipes_matrix recipe_number1 recipe_number2 =
       in get_ingredient 3; 
       let ingredients_list_dict = (List.rev !equal_ingredients_name, List.rev !equal_ingredients_quantity, List.rev !equal_ingredients_unit) in
       (* Returns *) 
-      ingredients_list_dict;
+      ingredients_list_dict; *)
+
+
+
+let find_equal_ingredients recipes_matrix recipe_number1 recipe_number2 = 
+  let ingredients_list = ref [] in 
+  let rec get_ingredient j =
+    (match j with
+    |  _ when j >= Array.length recipes_matrix.(recipe_number1) - 1 -> ()
+    |  _ ->
+      let ingredient_name = recipes_matrix.(recipe_number1).(j) in
+      let rec get_other_ingredient k =
+        (match k with
+        | _ when k >= Array.length recipes_matrix.(recipe_number2) -> ()
+        | _ when recipes_matrix.(recipe_number2).(k) = "" -> get_other_ingredient (k+2)
+        | _ ->
+          let other_ingredient = recipes_matrix.(recipe_number2).(k) in
+          if ingredient_name = other_ingredient then 
+          (
+              (* equal_ingredients_name := ingredient_name :: !equal_ingredients_name; *)
+              let str = recipes_matrix.(recipe_number1).(j+1) in
+                match split_on_first_space str with 
+                | [first; rest] ->
+                  let quantity_number_string_1 = first in
+                  let quantity_unit_1 = rest in
+
+              let str_2 = recipes_matrix.(recipe_number2).(k+1) in
+                match split_on_first_space str_2 with
+                | [first_2; rest_2] ->
+                  let quantity_number_string_2 = first_2 in
+                  let quantity_unit_2 = rest_2 in
+                  
+                print_endline quantity_unit_1;
+                print_endline quantity_unit_2;
+                if quantity_unit_1 = quantity_unit_2 then (
+                  let quantity_number_float_1 = float_of_string quantity_number_string_1 in
+                  let quantity_number_float_2 = float_of_string quantity_number_string_2 in
+                  let qty_total = quantity_number_float_1 +. quantity_number_float_2 in 
+                  let ing_dict = {
+                    name = ingredient_name; 
+                    total = qty_total; 
+                    unit = quantity_unit_1
+                  }; in 
+                  ingredients_list := ing_dict :: !ingredients_list
+                  (* print_endline ing_dict; *)
+                )
+               
+                (* let tuple = (quantity_number_float_1, quantity_number_float_2) in  *)
+                (* equal_ingredients_quantity := tuple :: !equal_ingredients_quantity; *)
+
+                (* if quantity_unit_1 = quantity_unit_2 then 
+                  equal_ingredients_unit :=  (quantity_unit_1, "") :: !equal_ingredients_unit
+                else equal_ingredients_unit := (quantity_unit_1, quantity_unit_2) ::  !equal_ingredients_unit; *)
+            );
+          get_other_ingredient (k+2))
+      in get_other_ingredient 3; get_ingredient (j+2)) 
+      in get_ingredient 3; 
+      (* let ingredients_list_dict = (List.rev !equal_ingredients_name, List.rev !equal_ingredients_quantity, List.rev !equal_ingredients_unit) in *)
+      (* Returns *) 
+      ingredients_list;
 
 
   
-let get_all_equal_ingredients recipes_matrix, recipe1, recipe2, recipe3 = 
+(* let get_all_equal_ingredients recipes_matrix, recipe1, recipe2, recipe3 = 
   let equal_elements_1_2 = find_equal_ingredients recipe1 recipe2 in
   let equal_elements_1_3 = find_equal_ingredients recipe1 recipe3 in
   let equal_elements_2_3 = find_equal_ingredients recipe2 recipe3 in
-  
+   *)
 
 
 
