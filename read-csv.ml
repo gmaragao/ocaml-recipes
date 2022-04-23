@@ -23,6 +23,10 @@ let rec print_list = function
 | e::l -> print_float e; print_list l;
 
 
+let split_on_first_space =
+  let re = Str.regexp "[ \t\r\n]" in
+  function s -> Str.bounded_split re s 2
+  
 
 (* Read the file and turns into array of lines *)
 let lines_in_file filename = 
@@ -91,10 +95,18 @@ let rec print_n_recipes_details recipe_number recipes_matrix remaining_recipes =
     print_ingredients_for_recipe input_by_user matrix_of_ingredients;
     read_input input_by_user in read_input 9;
 
-    
+
+type ingredients = {
+  name: int;
+  total: int;
+  unit: int;
+}
+
+
 let find_equal_ingredients recipes_matrix recipe_number1 recipe_number2 = 
   let equal_ingredients_quantity = ref [] in 
   let equal_ingredients_name = ref [] in 
+  let equal_ingredients_unit = ref [] in
   let rec get_ingredient j =
     (match j with
     |  _ when j >= Array.length recipes_matrix.(recipe_number1) - 1 -> ()
@@ -108,33 +120,44 @@ let find_equal_ingredients recipes_matrix recipe_number1 recipe_number2 =
           let other_ingredient = recipes_matrix.(recipe_number2).(k) in
           if ingredient_name = other_ingredient then 
             (
-              print_endline (ingredient_name ^ " " ^ other_ingredient); 
-              print_endline (recipes_matrix.(recipe_number2).(j+1) ^ " " ^ recipes_matrix.(recipe_number2).(k+1));
               equal_ingredients_name := ingredient_name :: !equal_ingredients_name;
-              let quantity_number_string_list_1 = String.split_on_char ' ' recipes_matrix.(recipe_number1).(j+1) in 
-              let quantity_number_string_list_2 = String.split_on_char ' ' recipes_matrix.(recipe_number2).(k+1) in 
-                let quantity_number_string_1 = (List.nth quantity_number_string_list_1 0) in
-                let quantity_number_string_2 = (List.nth quantity_number_string_list_2 0) in
-                 let quantity_number_float_1 = float_of_string quantity_number_string_1 in 
-                  print_float quantity_number_float_1;
-                let quantity_number_float_2 = float_of_string quantity_number_string_2 in 
-                  (* print_endline "AFF"; *)
-                  (* insert_at_end equal_ingredients_list quantity_number_float_2; *)
-                  print_float quantity_number_float_2;
-                  let tuple = (quantity_number_float_1, quantity_number_float_2) in 
-                  equal_ingredients_quantity := tuple :: !equal_ingredients_quantity;
-                  (* equal_ingredients_list := quantity_number_float_2 :: !equal_ingredients_list; *)
-                  (* equal_ingredients_list := my_list; *)
-                  print_endline "LIST NOW";
+
+              let str = recipes_matrix.(recipe_number1).(j+1) in
+              match split_on_first_space str with
+              | [first; rest] ->
+                let quantity_number_string_1 = first in
+                let quantity_unit_1 = rest in
+
+              let str_2 = recipes_matrix.(recipe_number2).(k+1) in
+              match split_on_first_space str_2 with
+              | [first_2; rest_2] ->
+                let quantity_number_string_2 = first_2 in
+                let quantity_unit_2 = rest_2 in
+
+                let quantity_number_float_1 = float_of_string quantity_number_string_1 in
+                let quantity_number_float_2 = float_of_string quantity_number_string_2 in
+
+                let tuple = (quantity_number_float_1, quantity_number_float_2) in 
+                equal_ingredients_quantity := tuple :: !equal_ingredients_quantity;
+
+                if quantity_unit_1 = quantity_unit_2 then 
+                  equal_ingredients_unit :=  (quantity_unit_1, "") :: !equal_ingredients_unit
+                else equal_ingredients_unit := (quantity_unit_1, quantity_unit_2) ::  !equal_ingredients_unit;
             );
           get_other_ingredient (k+2))
       in get_other_ingredient 3; get_ingredient (j+2)) 
       in get_ingredient 3; 
-      let ingredients_tuple = (List.rev !equal_ingredients_name, List.rev !equal_ingredients_quantity) in
+      let ingredients_list_dict = (List.rev !equal_ingredients_name, List.rev !equal_ingredients_quantity, List.rev !equal_ingredients_unit) in
       (* Returns *) 
-      ingredients_tuple;
-        (* )  *)
+      ingredients_list_dict;
 
+
+  
+let get_all_equal_ingredients recipes_matrix, recipe1, recipe2, recipe3 = 
+  let equal_elements_1_2 = find_equal_ingredients recipe1 recipe2 in
+  let equal_elements_1_3 = find_equal_ingredients recipe1 recipe3 in
+  let equal_elements_2_3 = find_equal_ingredients recipe2 recipe3 in
+  
 
 
 
