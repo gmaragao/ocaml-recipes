@@ -98,7 +98,7 @@ let get_all_ingredients recipes_matrix recipe_number =
     (match ing_detail_str with
     | "" -> ();
     | _ ->  
-      if ing_detail_str = "" then (print_endline "ACABA AQUI AGORA"; ();)
+      if ing_detail_str = "" then (();)
       else (
         let is_int = Str.string_match (Str.regexp "[0-9]+$") ing_detail_str 0 in
         let is_float_with_dot = Str.string_match (Str.regexp "[0-9].[0-9]+$") ing_detail_str 0 in
@@ -130,7 +130,6 @@ let get_all_ingredients recipes_matrix recipe_number =
                 | [] -> ()
                 | [first; rest] ->
                   let new_float_string = first ^ "." ^ rest in 
-                  print_endline ("new float stirng: " ^ new_float_string);
                   let quantity_number_float = float_of_string new_float_string in
                   let ingredient = {
                     name = ingredient_name;
