@@ -216,14 +216,32 @@ let find_equal_ingredients recipes_matrix recipe_number1 recipe_number2 =
       (* Returns *) 
       List.rev !ingredients_list;
 
-(* let sum_equal_ingredients equal_ingredients_1, equal_ingredients_2, equal_ingredients_3 = *)
 
-let get_all_equal_ingredients recipes_matrix recipe1 recipe2 recipe3 = 
-  let all_equals = ref [] in 
-  let equal_ingredients_1_2 = find_equal_ingredients recipes_matrix recipe1 recipe2 in
-  let equal_ingredients_1_3 = find_equal_ingredients recipes_matrix recipe1 recipe3 in
-  let equal_ingredients_2_3 = find_equal_ingredients recipes_matrix recipe2 recipe3 in
-  
+let print_ingredients_summary_for_recipes recipes_matrix recipe1 recipe2 recipe3 = 
+  let all_ingredients = all_ingredients_sum recipes_matrix recipe1 recipe2 recipe3 in 
+  print_endline "Ingredientes para as receitas: ";
+  print_recipe_title recipe1 recipes_matrix;
+  print_recipe_title recipe2 recipes_matrix;
+  print_recipe_title recipe3 recipes_matrix;
+  let rec print_ingredient_detail i =
+  (match i with
+  | _ when i >= (List.length all_ingredients - 1) -> print_endline "*************************"; ();
+  | _ ->
+    let ing_detail = List.nth all_ingredients i in 
+    if i = 0 then print_endline "*************************";
+    print_int (i+1);
+    print_string " - ";
+    print_string ing_detail.name;
+    print_string " | Quantidade: ";
+    print_float ing_detail.total;
+    print_string " | Unidade: ";
+    print_string ing_detail.unit;
+    print_newline ();
+
+    print_ingredient_detail (i+1);
+  );
+  in print_ingredient_detail 0;
+
 
 
 let all_ingredients_sum recipes_matrix recipe1 recipe2 recipe3 = 
@@ -271,7 +289,6 @@ let all_ingredients_sum recipes_matrix recipe1 recipe2 recipe3 =
       )
     done;
     if List.length !new_list = 0 then (
-      print_endline "ADICIONA SE NAO FOR IGUAL";
        let ingredient = {
           name = ing_list_1.name;
           total = ing_list_1.total;
@@ -290,7 +307,6 @@ let all_ingredients_sum recipes_matrix recipe1 recipe2 recipe3 =
       )
     done;
     if List.length !new_list = 0 then (
-      print_endline "ADICIONA SE NAO FOR IGUAL";
        let ingredient = {
           name = ing_list_2.name;
           total = ing_list_2.total;
@@ -342,7 +358,6 @@ let all_ingredients_sum recipes_matrix recipe1 recipe2 recipe3 =
       )
     done;
     if List.length !new_list = 0 then (
-      print_endline "ADICIONA SE NAO FOR IGUAL";
        let ingredient = {
           name = ing_list_3.name;
           total = ing_list_3.total;
@@ -361,7 +376,6 @@ let all_ingredients_sum recipes_matrix recipe1 recipe2 recipe3 =
       )
     done;
     if List.length !new_list = 0 then (
-      print_endline "ADICIONA SE NAO FOR IGUAL";
        let ingredient = {
           name = final_ings_list.name;
           total = final_ings_list.total;
@@ -381,54 +395,34 @@ let get_all_ingredients recipes_matrix recipe_number =
   (match i with 
   | _ when i >=  Array.length recipes_matrix.(recipe_number) - 1 -> ();
   | _ -> 
-  (* print_int i; *)
   let ingredient_name = recipes_matrix.(recipe_number).(i) in
-  (* print_int (Array.length recipes_matrix.(recipe_number)); *)
   let ing_detail_str = recipes_matrix.(recipe_number).(i+1) in
     (match ing_detail_str with
-    | "" -> print_endline "ACABA POR FAVBOR"; ();
+    | "" -> ();
     | _ ->  
-      (* print_endline ("AQUI: " ^ ing_detail_str); *)
       if ing_detail_str = "" then (print_endline "ACABA AQUI AGORA"; ();)
       else (
-        (* print_endline "ENTROU NO ELSE"; *)
         let is_int = Str.string_match (Str.regexp "[0-9]+$") ing_detail_str 0 in
         let is_float_with_dot = Str.string_match (Str.regexp "[0-9].[0-9]+$") ing_detail_str 0 in
         let is_float_with_comma = Str.string_match (Str.regexp "[0-9],[0-9]+$") ing_detail_str 0 in
-
-        (* print_endline ("String: " ^ing_detail_str); *)
-        (* print_endline "BOOL: ";
-        printf "%b " is_int;
-        printf "%b " is_float_with_dot;
-        printf "%b" is_float_with_comma;
-        print_endline ""; *)
-
         if (is_int  || is_float_with_dot || is_float_with_comma) then (
           let ingredient = {
             name = ingredient_name;
             total = float_of_string ing_detail_str;
             unit = "unidades";
           } in 
-          print_endline "é numero";
           ingredients_list := ingredient :: !ingredients_list;
           get_ingredient (i+2)
         ) 
         else (
-          (* print_endline "ENTROU"; *)
           (match split_on_first_space ing_detail_str with
           | [] -> ()
           | [first; rest] ->
-            print_endline ("FIRST: " ^ first ^ "REST: " ^  rest);
-            print_endline ingredient_name;
             let quantity_number_string = first in
             let is_number_first = Str.string_match (Str.regexp "[0-9]+$") first 0 in
             let is_float_with_dot_first = Str.string_match (Str.regexp "[0-9].[0-9]+$") first 0 in 
             let is_float_with_comma_first = Str.string_match (Str.regexp "[0-9],[0-9]+$") first 0 in
-            printf "%b " is_number_first;
-            printf "%b " is_float_with_dot_first;
-            printf "%b" is_float_with_comma_first;
             if (is_number_first || is_float_with_dot_first || is_float_with_comma_first) then (
-              print_endline "TA AQUI ?";
               let quantity_unit = rest in
               if is_float_with_comma_first then (
                 match split_on_first_comma first with
@@ -446,8 +440,6 @@ let get_all_ingredients recipes_matrix recipe_number =
                 get_ingredient (i+2)
               ) else (
                 let quantity_number_float = float_of_string first in 
-                print_endline ingredient_name;
-                print_endline "deve aparecer aqui!";
                 let ingredient = {
                   name = ingredient_name;
                   total = quantity_number_float;
@@ -467,8 +459,6 @@ let get_all_ingredients recipes_matrix recipe_number =
               get_ingredient (i+2);
             )
             else (
-              (* print_endline "ENTROU NESSE ELSE AQUI"; *)
-              (* print_string ("UNIT: " ^ quantity_number_string); *)
               let ingredient = {
                 name = ingredient_name;
                 total = 0.;
