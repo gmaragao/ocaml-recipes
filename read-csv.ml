@@ -303,7 +303,7 @@ let all_ingredients_sum recipes_matrix recipe1 recipe2 recipe3 =
   if not add them to new list
   if are sum and add to new list
   check the ones remaing from first final ings *)
-  (* for i = 0 to (List.length all_ings_3) - 1 do 
+   for i = 0 to (List.length all_ings_3) - 1 do 
     let ing_list_3 = List.nth all_ings_3 i in
     for j = 0 to (List.length !final_ings_qty) - 1 do
       let final_ings_list = List.nth !final_ings_qty j in
@@ -350,8 +350,8 @@ let all_ingredients_sum recipes_matrix recipe1 recipe2 recipe3 =
         } in 
       final_ings_qty_updated := ingredient :: !final_ings_qty_updated;
     )
-  done; *)
-  (* for y = 0 to (List.length !final_ings_qty) -1 do
+  done;
+  for y = 0 to (List.length !final_ings_qty) -1 do
     let final_ings_list = List.nth !final_ings_qty y in
     let new_list = ref [] in 
     for k = 0 to (List.length !final_ings_qty_updated) - 1 do
@@ -369,8 +369,8 @@ let all_ingredients_sum recipes_matrix recipe1 recipe2 recipe3 =
         } in 
       final_ings_qty_updated := ingredient :: !final_ings_qty_updated;
     )
-  done; *)
-  List.rev !final_ings_qty;
+  done;
+  List.rev !final_ings_qty_updated;
 
 
 
