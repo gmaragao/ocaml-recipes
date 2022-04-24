@@ -50,20 +50,6 @@ let create_recipe_matrix lines =
   recipes_matrix;;
 
 
-let print_ingredients_for_recipe recipe_number recipes_matrix =
-  print_endline "Ingredientes: ";
-  (* Getting only the ingredients *)
-  for i = 3 to 23 do
-    let ing_name = recipes_matrix.(recipe_number+1).(i) in
-    if ing_name = "" then (
-      ();
-    ) else (
-      let ing_detail = recipes_matrix.(recipe_number+1).(i+1) in 
-      print_string (" " ^ ing_detail ^ " ");
-      print_string (ing_name ^ ", ");
-    )
-  done;;
-
 let print_recipe_title recipe_number recipes_matrix =
   print_endline ("Nome: " ^ recipes_matrix.(recipe_number).(1));;
 
@@ -71,7 +57,7 @@ let print_recipe_preparation recipe_number recipes_matrix =
   print_newline ();
   print_endline "***********************************";
   print_endline "Preparo: ";
-  print_string recipes_matrix.(recipe_number+1).(2);
+  print_string recipes_matrix.(recipe_number).(2);
   print_newline ();
   print_endline "***********************************";
   ;;
@@ -176,6 +162,22 @@ let get_all_ingredients recipes_matrix recipe_number =
       get_ingredient 3;
       List.rev !ingredients_list;;
 
+let print_ingredients_for_recipe recipe_number recipes_matrix = 
+    let ingredient_details_list = get_all_ingredients recipes_matrix (recipe_number) in
+    print_endline "Ingredientes: ";
+    print_newline ();
+    let rec print_ing_detail i = 
+    match i with
+    | _ when i >= List.length ingredient_details_list - 1 -> ()
+    | _ -> 
+      let ingredient_details = List.nth ingredient_details_list i in
+      if i <> 0 then print_string (" ");
+      print_float ingredient_details.total; 
+      print_string (" " ^ ingredient_details.unit ^ " ");
+      print_string ingredient_details.name;
+      print_string " | ";
+      print_ing_detail (i+1); in print_ing_detail 0;;
+      
 
 let all_ingredients_sum recipes_matrix recipe1 recipe2 recipe3 = 
   let final_ings_qty = ref [] in 
@@ -350,34 +352,6 @@ let print_ingredients_summary_for_recipes recipes_matrix recipe1 recipe2 recipe3
   );
   in print_ingredient_detail 0;;
 
-let get_all_equals list1 list2 =
-let list_of_equals = ref [] in 
-let rec get_all_equals_l1 i =
-  (match i with
-  | _ when i > List.length list1 -> ()
-  | _ ->  
-    let element_list_1 = List.nth list1 i in
-    let rec get_all_equals_l2 j = 
-    (match j with
-      | _ when j > List.length list2 -> ()
-      | _ -> 
-      let element_list_2 = List.nth list2 j in 
-      if element_list_1.name = element_list_2.name then 
-        let el_total = element_list_1.total in
-        let el_total_2 = element_list_2.total in 
-        let total_els = el_total +. el_total_2 in print_float total_els;
-        let final_equals = {
-          name = element_list_1.name;
-          total = total_els;
-          unit = element_list_1.unit
-        }; in 
-        list_of_equals := final_equals :: !list_of_equals;
-      
-    get_all_equals_l2 (j+1))
-    in get_all_equals_l2 0; get_all_equals_l1 (i+1))
-    in get_all_equals_l1 0;
-    List.rev !list_of_equals;;
-
 
 let choose_option number recipes_matrix =
   match number with
@@ -385,7 +359,7 @@ let choose_option number recipes_matrix =
   | 2 ->
       print_endline "Diga o número da receita."; 
       let input_by_user = read_int() in
-        print_recipe_title input_by_user recipes_matrix;
+      print_recipe_title input_by_user recipes_matrix;
       print_ingredients_for_recipe input_by_user recipes_matrix;
       print_recipe_preparation input_by_user recipes_matrix;
 
